@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#14213d" />
+    <meta name="description" content="Fırat Üniversitesi Mühendislik Fakültesi için genetik algoritma destekli sınav takvimi planlama arayüzü." />
+    <title>SınavPlan · Sınav Takvimi Yönetimi</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Ana menü">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"><span>F</span></div>
+          <div><strong>SınavPlan</strong><small>Fırat Üniversitesi</small></div>
+        </div>
+        <div class="workspace-tag"><span class="workspace-dot"></span><span>Mühendislik Fakültesi</span></div>
+        <nav class="nav-list" aria-label="Sayfalar">
+          <button class="nav-item active" data-view="overview"><span class="nav-icon">▦</span>Genel Bakış</button>
+          <button class="nav-item" data-view="courses"><span class="nav-icon">▤</span>Dersler <span class="nav-count" id="navCourseCount">0</span></button>
+          <button class="nav-item" data-view="staff"><span class="nav-icon">♧</span>Hocalar ve Asistanlar</button>
+          <button class="nav-item" data-view="rooms"><span class="nav-icon">▧</span>Derslikler</button>
+          <button class="nav-item" data-view="calendar"><span class="nav-icon">▦</span>Sınav Takvimi</button>
+          <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span>Planlama Ayarları</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="guide-card"><span class="guide-icon">✦</span><strong>Akıllı planlama</strong><p>Genetik algoritma, sınavları kısıtlara göre yerleştirir ve en uygun takvimi arar.</p></div>
+          <div class="profile"><div class="avatar">FÜ</div><div><strong>Proje çalışma alanı</strong><small>Yerel prototip</small></div><span class="profile-more">···</span></div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumb">Fırat Üniversitesi <span>/</span> Mühendislik Fakültesi <span>/</span> <strong id="breadcrumbCurrent">Genel Bakış</strong></div>
+          <div class="topbar-right"><span class="local-pill"><span></span> Yerel çalışma alanı</span><div class="top-avatar">FÜ</div></div>
+        </header>
+
+        <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+        <section id="overview" class="view active">
+          <div class="page-heading"><div><div class="eyebrow">FAKÜLTE SINAV PLANLAMA</div><h1>Sınav programını oluşturun.</h1><p>Dersleri, hocaları, asistanları ve derslikleri girin. Uygun programı tek adımda üretin.</p></div><button class="primary-button generate-button" data-action="generate"><span>✦</span> Program Oluştur</button></div>
+          <div class="context-strip"><div class="context-icon">▦</div><div><strong id="termLabel">Sınav haftası</strong><span id="dateRangeLabel">Tarih seçilmedi</span></div><div class="context-actions"><button class="text-button" id="clearSample">Örnek verileri temizle</button><button class="text-button" data-view="settings">Tarihi düzenle <span>→</span></button></div></div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-top"><span class="stat-icon blue">▤</span><span class="stat-note">Tanımlı kayıt</span></div><strong id="statCourses">0</strong><span>Planlanacak sınav</span></div>
+            <div class="stat-card"><div class="stat-top"><span class="stat-icon violet">♧</span><span class="stat-note">Kayıtlı</span></div><strong id="statTeachers">0</strong><span>Hoca</span></div>
+            <div class="stat-card"><div class="stat-top"><span class="stat-icon amber">♧</span><span class="stat-note">Gözetmen havuzu</span></div><strong id="statAssistants">0</strong><span>Asistan</span></div>
+            <div class="stat-card"><div class="stat-top"><span class="stat-icon green">✓</span><span class="stat-note" id="statConflictNote">Son plan</span></div><strong id="statConflicts">—</strong><span>Zorunlu ihlal</span></div>
+          </div>
+          <div class="overview-grid">
+            <section class="panel schedule-preview"><div class="panel-heading"><div><h2>Haftalık görünüm</h2><p>Oluşturulan sınav programının genel görünümü</p></div><button class="outline-button" data-view="calendar">Tüm takvim <span>↗</span></button></div><div id="weekPreview"></div></section>
+            <aside class="overview-side"><section class="panel health-panel"><div class="panel-heading"><div><h2>Plan durumu</h2><p>Kısıtların son kontrolü</p></div></div><div id="healthContent"></div></section><section class="panel flow-panel"><div class="panel-heading"><div><h2>Memur iş akışı</h2><p>Programı hazırlamak için</p></div></div><div class="flow-step"><b>01</b><div><strong>Kayıtları girin</strong><span>Hocaları, asistanları, dersleri ve derslikleri tanımlayın.</span></div></div><div class="flow-step"><b>02</b><div><strong>Haftayı belirleyin</strong><span>Uygun sınav günlerini ve saatlerini seçin.</span></div></div><div class="flow-step"><b>03</b><div><strong>Programı üretin</strong><span>Çakışmaları denetleyin ve sonucu dışa aktarın.</span></div></div></section></aside>
+          </div>
+        </section>
+
+        <section id="courses" class="view">
+          <div class="page-heading"><div><div class="eyebrow">SINAV VERİLERİ</div><h1>Dersler</h1><p>Sınava girecek dersleri ve çakışma gruplarını girin; hocayı kayıtlı listeden seçin.</p></div><button class="primary-button" id="showCourseForm">+ Ders Ekle</button></div>
+          <div class="panel form-panel hidden" id="courseFormPanel"><div class="panel-heading"><div><h2>Yeni ders ekle</h2><p>Bu bilgiler sınavın saat ve derslik atamasında kullanılır.</p></div></div><form id="courseForm" class="entry-form"><label>Ders adı<input name="name" required maxlength="80" placeholder="Örn. Veri Yapıları" /></label><label>Çakışma grubu<input name="group" required maxlength="60" placeholder="Örn. Bilgisayar Müh. 2" /></label><label>Dersin hocası<select name="teacherId" id="courseTeacherSelect" required></select></label><label>Sınava girecek kişi sayısı<input name="students" type="number" min="1" max="1000" required placeholder="60" /></label><label>Süre (dakika)<select name="duration"><option value="60">60 dakika</option><option value="90" selected>90 dakika</option><option value="120">120 dakika</option><option value="180">180 dakika</option></select></label><div class="form-actions"><button type="button" class="outline-button" id="cancelCourseForm">Vazgeç</button><button type="submit" class="primary-button">Dersi Kaydet</button></div></form></div>
+          <div class="panel table-panel"><div class="panel-heading"><div><h2>Planlanacak dersler <span class="heading-count" id="courseHeadingCount">0</span></h2><p>Kayıtlı derslerin tümü programa dahil edilir.</p></div></div><div class="table-scroll"><table><thead><tr><th>DERS</th><th>ÇAKIŞMA GRUBU</th><th>HOCA</th><th>KİŞİ</th><th>SÜRE</th><th></th></tr></thead><tbody id="courseRows"></tbody></table></div></div>
+        </section>
+
+        <section id="staff" class="view">
+          <div class="page-heading"><div><div class="eyebrow">PERSONEL HAVUZU</div><h1>Hocalar ve asistanlar</h1><p>Hocaları derslere bağlayın; asistanlar sınavlarda gözetmen olarak otomatik atanır.</p></div></div>
+          <div class="staff-grid"><div class="panel staff-panel"><div class="panel-heading"><div><h2>Hocalar <span class="heading-count" id="teacherCount">0</span></h2><p>Derslere atanacak öğretim elemanları</p></div></div><form id="teacherForm" class="inline-form"><label class="sr-only" for="teacherName">Hoca adı</label><input id="teacherName" name="name" required maxlength="80" placeholder="Hoca adı ve soyadı" /><button class="primary-button" type="submit">+ Ekle</button></form><div id="teacherList" class="staff-list"></div></div><div class="panel staff-panel"><div class="panel-heading"><div><h2>Asistanlar <span class="heading-count" id="assistantCount">0</span></h2><p>Sınav gözetmenliği için kullanılacak havuz</p></div></div><form id="assistantForm" class="inline-form"><label class="sr-only" for="assistantName">Asistan adı</label><input id="assistantName" name="name" required maxlength="80" placeholder="Asistan adı ve soyadı" /><button class="primary-button" type="submit">+ Ekle</button></form><div id="assistantList" class="staff-list"></div></div></div>
+        </section>
+
+        <section id="rooms" class="view">
+          <div class="page-heading"><div><div class="eyebrow">KAPASİTE YÖNETİMİ</div><h1>Derslikler</h1><p>Sınavlar yalnızca öğrenci sayısına yeterli kapasitedeki dersliklere atanır.</p></div><button class="primary-button" id="showRoomForm">+ Yeni Derslik Ekle</button></div>
+          <div class="panel form-panel hidden" id="roomFormPanel"><div class="panel-heading"><div><h2>Yeni derslik ekle</h2><p>Derslik adı ve sınav kapasitesini girin.</p></div></div><form id="roomForm" class="entry-form room-form"><label>Derslik adı<input name="name" required maxlength="40" placeholder="Örn. A-101" /></label><label>Kapasite<input name="capacity" type="number" min="1" max="1000" required placeholder="80" /></label><div class="form-actions"><button type="button" class="outline-button" id="cancelRoomForm">Vazgeç</button><button type="submit" class="primary-button">Dersliği Kaydet</button></div></form></div>
+          <div class="room-grid" id="roomCards"></div>
+        </section>
+
+        <section id="calendar" class="view">
+          <div class="page-heading"><div><div class="eyebrow">OLUŞTURULAN PROGRAM</div><h1>Sınav takvimi</h1><p id="calendarSubtitle">Haftalık sınav dağılımını inceleyin.</p></div><div class="heading-actions"><button class="outline-button" id="exportCsv">↓ CSV İndir</button><button class="primary-button generate-button" data-action="generate"><span>✦</span> Yeniden Oluştur</button></div></div>
+          <div id="resultBanner" class="result-banner"></div>
+          <div class="panel calendar-panel"><div class="panel-heading"><div><h2>Haftalık program</h2><p>Gün ve saate göre yerleştirilen sınavlar</p></div><span class="legend"><i></i> Planlanan sınav</span></div><div id="calendarGrid" class="calendar-scroll"></div></div>
+          <div class="panel table-panel"><div class="panel-heading"><div><h2>Liste görünümü</h2><p>Gün, saat, ders, hoca, gözetmen ve derslik ayrıntıları</p></div></div><div class="table-scroll"><table><thead><tr><th>GÜN / SAAT</th><th>DERS</th><th>HOCA</th><th>GÖZETMEN ASİSTAN</th><th>DERSLİK</th><th>DURUM</th></tr></thead><tbody id="scheduleRows"></tbody></table></div></div>
+        </section>
+
+        <section id="settings" class="view">
+          <div class="page-heading"><div><div class="eyebrow">PLANLAMA KURALLARI</div><h1>Planlama ayarları</h1><p>Haftayı, kullanılacak saatleri ve algoritma parametrelerini belirleyin.</p></div><button class="primary-button generate-button" data-action="generate"><span>✦</span> Program Oluştur</button></div>
+          <div class="settings-grid"><div class="panel settings-panel"><div class="panel-heading"><div><h2>Sınav haftası</h2><p>Beş iş günlük planın başlangıcını seçin.</p></div></div><label class="setting-label">Pazartesi tarihi<input id="weekStart" type="date" /></label><p class="hint">Seçtiğiniz tarih pazartesiye ayarlanır. Takvim pazartesi–cuma günlerini kapsar.</p><div class="divider"></div><div class="panel-heading compact"><div><h2>Uygun günler</h2><p>Tatil veya uygun olmayan günleri kapatın.</p></div></div><div class="day-options" id="dayOptions"></div><div class="divider"></div><div class="panel-heading compact"><div><h2>Uygun saatler</h2><p>Her gün kullanılacak başlangıç saatlerini seçin.</p></div></div><div class="slot-options" id="slotOptions"></div><p class="hint">Sınav süreleri gerçek bitiş saatine göre çakışma kontrolüne girer.</p></div>
+          <div class="panel settings-panel"><div class="panel-heading"><div><h2>Genetik algoritma</h2><p>Arama davranışını ayarlayın.</p></div></div><div class="settings-fields"><label class="setting-label">Popülasyon büyüklüğü<input id="population" type="number" min="20" max="300" step="10" /></label><label class="setting-label">Nesil sayısı<input id="generations" type="number" min="20" max="1000" step="10" /></label><label class="setting-label">Çaprazlama oranı (%)<input id="crossover" type="number" min="0" max="100" step="5" /></label><label class="setting-label">Mutasyon oranı (%)<input id="mutation" type="number" min="0" max="100" step="1" /></label></div><div class="divider"></div><div class="constraint-list"><strong>Öncelikli kısıtlar</strong><div><span>✓</span> Aynı grubun ve hocanın saat çakışması</div><div><span>✓</span> Asistan ve derslik çakışması</div><div><span>✓</span> Derslik kapasitesi ve günlük sınav yükü</div></div><button class="outline-button save-settings" id="saveSettings">Ayarları Kaydet</button></div></div>
+        </section>
+        <footer class="footer">SınavPlan · Fırat Üniversitesi Mühendislik Fakültesi için proje prototipi <span>Veriler bu tarayıcıda saklanır.</span></footer>
+      </main>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
